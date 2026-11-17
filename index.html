@@ -170,7 +170,7 @@
       </form>
       <div class="form-msg" role="status" aria-live="polite"></div>
       <div class="small"><span>No job title needed to start</span><a href="#demo">Watch the 2-min demo ›</a></div>
-      <div class="soon">On iPhone now. Web and Android coming soon.</div>
+      <div class="soon">On iPhone now. Android app coming soon, with a web version until then.</div>
     </div>
     <div class="hero-phones" aria-hidden="true">
       <div class="phone p1"><img src="shot-home.png" alt=""></div>
@@ -315,14 +315,14 @@
     <details><summary>Does it remember me?</summary><p>Yes. PointMan keeps your profile and conversation history so advice builds on what you've already shared.</p></details>
     <details><summary>What is a guide?</summary><p>A short adaptive question session that turns into a personal plan with concrete steps. You can make a new one any time.</p></details>
     <details><summary>When can I try it?</summary><p>PointMan is in a small beta on iPhone right now. Join the waitlist and we'll send you an invite as we open more spots.</p></details>
-    <details><summary>Is there an Android or web version?</summary><p>Not yet. PointMan is on iPhone first, and a web version that works on Android phones and computers is coming soon. Leave your email, check "I use Android", and we'll email you when it's ready.</p></details>
+    <details><summary>Is there an Android app?</summary><p>An Android app is coming soon. Until then, PointMan has a web version that works on Android phones and computers. Pick "Android" when you join the waitlist and we'll email you the link.</p></details>
     <details><summary>How much does it cost?</summary><p>It's free during the beta.</p></details>
     <details><summary>What happens to my information?</summary><p>Your profile and chats are used only to give you better career advice. We don't sell your data, and you can delete your account from inside the app.</p></details>
   </section>
 
   <div class="cta" id="join">
     <h2>Be first to try PointMan.</h2>
-    <p>We're inviting people to the iPhone beta in small groups. Leave your email and we'll send you an invite. Web and Android are coming soon.</p>
+    <p>We're inviting people to the iPhone beta in small groups. Leave your email and we'll send you an invite. The Android app is coming soon, and Android users get the web version until then.</p>
     <form class="signup waitlist">
       <fieldset class="device"><legend>My phone:</legend><label><input type="radio" name="device" value="ios" checked><span>iPhone</span></label><label><input type="radio" name="device" value="android"><span>Android</span></label></fieldset>
       <input type="email" name="email" placeholder="you@email.com" required aria-label="Email address">
@@ -362,7 +362,7 @@
         var btn=f.querySelector('button'), email=f.email.value.trim(), android=f.device.value==='android';
         btn.disabled=true; m.textContent='Adding you...';
         fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:(f.closest('#join')?'landing':'landing-hero')+(android?'-android':'')})})
-          .then(function(r){ if(!r.ok) throw new Error(r.status); f.reset(); m.textContent=android?"You're on the list. We'll email you when the web version is ready.":"You're on the list. Watch your inbox for an invite."; })
+          .then(function(r){ if(!r.ok) throw new Error(r.status); f.reset(); m.textContent=android?"You're on the list. We'll email you the link to the web version.":"You're on the list. Watch your inbox for an invite."; })
           .catch(function(){ m.textContent='Something went wrong. Please try again in a minute.'; })
           .finally(function(){ btn.disabled=false; });
       });
