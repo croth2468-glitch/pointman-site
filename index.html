@@ -43,6 +43,11 @@
   .signup input:focus{outline:none;border-color:var(--green)}
   @media(max-width:480px){.signup{flex-direction:column}.signup input{flex:none;width:100%}.signup .btn{width:100%}}
   .form-msg{margin-top:12px;font-weight:700;min-height:1.6em}
+  .android{flex-basis:100%;display:flex;align-items:center;gap:10px;color:var(--muted);font-size:15px;font-weight:600;cursor:pointer;padding:4px 6px}
+  .android input{flex:none;width:22px;height:22px;margin:0;padding:0;accent-color:var(--green);cursor:pointer}
+  @media(max-width:860px){.hero .android{justify-content:center}}
+  .cta .android{color:#fff;justify-content:center}
+  .soon{margin-top:14px;color:var(--muted);font-size:15px;font-weight:600}
   .small{display:flex;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:14px;font-weight:600;margin-top:4px}
   .small a{color:var(--green);text-decoration:none}
   .phone{width:250px;background:#111;border-radius:40px;padding:9px;box-shadow:0 24px 60px rgba(0,0,0,.28);flex:none}
@@ -153,9 +158,11 @@
       <form class="signup waitlist">
         <input type="email" name="email" placeholder="you@email.com" required aria-label="Email address">
         <button class="btn" type="submit">Get early access</button>
+        <label class="android"><input type="checkbox" name="android"> I use Android, so tell me when the web version is ready</label>
       </form>
       <div class="form-msg" role="status" aria-live="polite"></div>
       <div class="small"><span>No job title needed to start</span><a href="#demo">Watch the 2-min demo ›</a></div>
+      <div class="soon">On iPhone now. Web and Android coming soon.</div>
     </div>
     <div class="hero-phones" aria-hidden="true">
       <div class="phone p1"><img src="shot-home.png" alt=""></div>
@@ -300,16 +307,18 @@
     <details><summary>Does it remember me?</summary><p>Yes. PointMan keeps your profile and conversation history so advice builds on what you've already shared.</p></details>
     <details><summary>What is a guide?</summary><p>A short adaptive question session that turns into a personal plan with concrete steps. You can make a new one any time.</p></details>
     <details><summary>When can I try it?</summary><p>PointMan is in a small beta on iPhone right now. Join the waitlist and we'll send you an invite as we open more spots.</p></details>
+    <details><summary>Is there an Android or web version?</summary><p>Not yet. PointMan is on iPhone first, and a web version that works on Android phones and computers is coming soon. Join the waitlist and check "I use Android" and we'll email you when it's ready instead of sending an iPhone invite.</p></details>
     <details><summary>How much does it cost?</summary><p>It's free during the beta.</p></details>
     <details><summary>What happens to my information?</summary><p>Your profile and chats are used only to give you better career advice. We don't sell your data, and you can delete your account from inside the app.</p></details>
   </section>
 
   <div class="cta" id="join">
     <h2>Be first to try PointMan.</h2>
-    <p>We're inviting people to the iPhone beta in small groups. Leave your email and we'll send you an invite.</p>
+    <p>We're inviting people to the iPhone beta in small groups. Leave your email and we'll send you an invite. Web and Android are coming soon.</p>
     <form class="signup waitlist">
       <input type="email" name="email" placeholder="you@email.com" required aria-label="Email address">
       <button class="btn" type="submit">Join the waitlist</button>
+      <label class="android"><input type="checkbox" name="android"> I use Android, so tell me when the web version is ready</label>
     </form>
     <div class="form-msg" id="form-msg" role="status" aria-live="polite"></div>
     <div class="note">No spam. Just your invite and launch news.</div>
@@ -334,16 +343,18 @@
   })();
 
   // Waitlist (hero and bottom forms): saves the email through the PointMan backend.
+  // "I use Android" adds -android to the source, so those people get the web
+  // launch email instead of an iPhone TestFlight invite.
   (function(){
     var ENDPOINT='https://qungmktbqcsebmmdpqvy.supabase.co/functions/v1/join-waitlist';
     document.querySelectorAll('form.waitlist').forEach(function(f){
       var m=f.nextElementSibling;
       f.addEventListener('submit',function(e){
         e.preventDefault();
-        var btn=f.querySelector('button'), email=f.email.value.trim();
+        var btn=f.querySelector('button'), email=f.email.value.trim(), android=f.android.checked;
         btn.disabled=true; m.textContent='Adding you...';
-        fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:f.closest('#join')?'landing':'landing-hero'})})
-          .then(function(r){ if(!r.ok) throw new Error(r.status); f.reset(); m.textContent="You're on the list. Watch your inbox for an invite."; })
+        fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:(f.closest('#join')?'landing':'landing-hero')+(android?'-android':'')})})
+          .then(function(r){ if(!r.ok) throw new Error(r.status); f.reset(); m.textContent=android?"You're on the list. We'll email you when the web version is ready.":"You're on the list. Watch your inbox for an invite."; })
           .catch(function(){ m.textContent='Something went wrong. Please try again in a minute.'; })
           .finally(function(){ btn.disabled=false; });
       });
