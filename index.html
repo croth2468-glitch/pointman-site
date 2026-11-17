@@ -44,10 +44,17 @@
   .signup input:focus{outline:none;border-color:var(--green)}
   @media(max-width:480px){.signup{flex-direction:column}.signup input{flex:none;width:100%}.signup .btn{width:100%}}
   .form-msg{margin-top:12px;font-weight:700;min-height:1.6em}
-  .android{flex-basis:100%;display:flex;align-items:center;gap:10px;color:var(--muted);font-size:15px;font-weight:600;cursor:pointer;padding:4px 6px}
-  .android input{flex:none;width:22px;height:22px;margin:0;padding:0;accent-color:var(--green);cursor:pointer}
-  @media(max-width:860px){.hero .android{justify-content:center}}
-  .cta .android{color:#fff;justify-content:center}
+  .device{flex-basis:100%;display:flex;align-items:center;gap:8px;border:0;margin:0 0 2px;padding:0;color:var(--muted);font-size:15px;font-weight:600}
+  .device legend{float:left;margin-right:4px;padding:0}
+  .device label{position:relative;cursor:pointer}
+  .device input{position:absolute;opacity:0;width:1px;height:1px}
+  .device span{display:inline-block;padding:9px 18px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--text);transition:border-color .15s,background .15s}
+  .device input:checked+span{border-color:var(--green);background:var(--green);color:#fff}
+  .device input:focus-visible+span{outline:3px solid var(--lime);outline-offset:2px}
+  @media(max-width:860px){.hero .device{justify-content:center}}
+  .cta .device{justify-content:center;color:#fff}
+  .cta .device span{background:transparent;border-color:rgba(255,255,255,.6);color:#fff}
+  .cta .device input:checked+span{background:#fff;border-color:#fff;color:var(--green-d)}
   .soon{margin-top:14px;color:var(--muted);font-size:15px;font-weight:600}
   .small{display:flex;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:14px;font-weight:600;margin-top:4px}
   .small a{color:var(--green);text-decoration:none}
@@ -157,9 +164,9 @@
       <h1>Your next step <em>starts here.</em></h1>
       <p class="sub">Tell PointMan what you've liked, what you're good at and what you'd rather avoid. It shows you career paths that fit and builds a step-by-step plan with you.</p>
       <form class="signup waitlist">
+      <fieldset class="device"><legend>My phone:</legend><label><input type="radio" name="device" value="ios" checked><span>iPhone</span></label><label><input type="radio" name="device" value="android"><span>Android</span></label></fieldset>
         <input type="email" name="email" placeholder="you@email.com" required aria-label="Email address">
         <button class="btn" type="submit">Get early access</button>
-        <label class="android"><input type="checkbox" name="android"> I use Android, so tell me when the web version is ready</label>
       </form>
       <div class="form-msg" role="status" aria-live="polite"></div>
       <div class="small"><span>No job title needed to start</span><a href="#demo">Watch the 2-min demo ›</a></div>
@@ -317,9 +324,9 @@
     <h2>Be first to try PointMan.</h2>
     <p>We're inviting people to the iPhone beta in small groups. Leave your email and we'll send you an invite. Web and Android are coming soon.</p>
     <form class="signup waitlist">
+      <fieldset class="device"><legend>My phone:</legend><label><input type="radio" name="device" value="ios" checked><span>iPhone</span></label><label><input type="radio" name="device" value="android"><span>Android</span></label></fieldset>
       <input type="email" name="email" placeholder="you@email.com" required aria-label="Email address">
       <button class="btn" type="submit">Join the waitlist</button>
-      <label class="android"><input type="checkbox" name="android"> I use Android, so tell me when the web version is ready</label>
     </form>
     <div class="form-msg" id="form-msg" role="status" aria-live="polite"></div>
     <div class="note">No spam. Just your invite and launch news.</div>
@@ -344,7 +351,7 @@
   })();
 
   // Waitlist (hero and bottom forms): saves the email through the PointMan backend.
-  // "I use Android" adds -android to the source, so those people get the web
+  // Picking "Android" adds -android to the source, so those people get the web
   // launch email instead of an iPhone TestFlight invite.
   (function(){
     var ENDPOINT='https://qungmktbqcsebmmdpqvy.supabase.co/functions/v1/join-waitlist';
@@ -352,7 +359,7 @@
       var m=f.nextElementSibling;
       f.addEventListener('submit',function(e){
         e.preventDefault();
-        var btn=f.querySelector('button'), email=f.email.value.trim(), android=f.android.checked;
+        var btn=f.querySelector('button'), email=f.email.value.trim(), android=f.device.value==='android';
         btn.disabled=true; m.textContent='Adding you...';
         fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:(f.closest('#join')?'landing':'landing-hero')+(android?'-android':'')})})
           .then(function(r){ if(!r.ok) throw new Error(r.status); f.reset(); m.textContent=android?"You're on the list. We'll email you when the web version is ready.":"You're on the list. Watch your inbox for an invite."; })
